@@ -60,7 +60,7 @@ def get_last_move():
         fig += driver.find_element(By.CLASS_NAME, 'selected').find_element(By.CSS_SELECTOR, 'span[data-figurine]').get_attribute('data-figurine')
     except Exception as exception: pass
     print(fig + driver.find_element(By.CLASS_NAME, 'selected').text)
-    return fig + driver.find_element(By.CLASS_NAME, 'selected').text
+    return fig + driver.find_element(By.CLASS_NAME, 'selected').text if "=" not in driver.find_element(By.CLASS_NAME, 'selected').text else driver.find_element(By.CLASS_NAME, 'selected').text + fig
 
 time_delay = lambda: 0.2 if "clock-low-time" in driver.find_element(By.CLASS_NAME, "clock-top").get_attribute('class') else random.choice(time_lists[GAME_MODE])
 
