@@ -21,7 +21,6 @@ driver.maximize_window()
 driver.get("https://www.chess.com/analysis")
 actions = ActionChains(driver)
 
-
 moves: int = 0
 
 time.sleep(2)
