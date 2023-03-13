@@ -1,15 +1,15 @@
 <h2>ChessCheater?</h2>
 
-<p> A made-for-fun project that I built to improve my automation skills when I saw myself wasting lot of time playing chess </p>
+<p> A made-for-fun project that I built to improve my automation skills when I saw myself wasting a lot of time playing chess </p>
 
-<b><p style="color: red;">According to chess.com <a href="https://www.chess.com/legal/user-agreement">terms of service</a> using chessCheater online in rated games is illegal and I'm not responsibal for any illegal uses of it!</p></b>
+<b><p style="color: red;">According to chess.com <a href="https://www.chess.com/legal/user-agreement">terms of service</a> using chessCheater online in rated games is illegal and I'm not responsible for any illegal uses of it!</p></b>
 
 <hr>
 
-<h3> How to setup ? </h3>
+<h3> How to set up? </h3>
 
 <p>
-    - download any chess engine ( stockfish, komodo, batata or any other engine ) and save it as to fish.exe
+    - download any chess engine ( stockfish, komodo, batata or any other engine ) and save it as fish.exe
 </p>
 
 <p>
