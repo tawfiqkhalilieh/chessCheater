@@ -25,10 +25,10 @@ moves: int = 0
 time.sleep(10)
 
 def move(frm: str, to: str):
-    driver.find_element(By.CLASS_NAME, board[frm]["square"]).click()
-    actions.move_to_element(driver.find_element(By.CLASS_NAME, board[frm]["square"])).perform()
-    action_chains2 = ActionChains(driver)
-    action_chains2.move_by_offset(board[frm][to][0], board[frm][to][1]).click().perform()
+    actions.click(on_element=driver.find_element(By.CLASS_NAME, board[frm]["square"]))
+    actions.move_to_element(driver.find_element(By.CLASS_NAME, board[frm]["square"]))
+    actions.move_by_offset(board[frm][to][0], board[frm][to][1]).click()
+    actions.perform()
 
 try:
     while not chess_board.is_game_over():
