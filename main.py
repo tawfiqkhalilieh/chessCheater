@@ -1,124 +1,120 @@
 import chess
 import chess.engine
 import chess.svg
-from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 import time
-import random
 from constants import board as board
+from player import ELO, USERNAME, AUTO_PROMOTE_TO_QUEEN
+from utils.login import login
+from utils.move import move as chess_move
+from utils.render_board import render_board
+from utils.options import driver
+from utils.update_board import update_board
+from utils.get_last_move import get_last_move
+from utils.next_game import next_game
+from utils.is_ended import is_ended
+from utils.time_delay import time_delay
 
-chess_board = chess.Board()
-engine = chess.engine.SimpleEngine.popen_uci(r"fish.exe")
+chess_board: chess.Board = chess.Board()
+engine: chess.engine.SimpleEngine = chess.engine.SimpleEngine.popen_uci(r"fish.exe")
 engine.configure(
     {
         "UCI_LimitStrength": True, 
-        "UCI_Elo": 2400
+        "UCI_Elo": ELO
     }
 )
 
 # create a webdriver instance
-driver = webdriver.Chrome()
-driver.maximize_window()
+actions: ActionChains = ActionChains(driver)
 
-# navigate to a webpage
+# navigate to the computer page
 driver.get("https://www.chess.com/play/computer")
 driver.find_element(By.CSS_SELECTOR, "[data-cy='modal-first-time-button']").click()
 
-driver.find_element(By.CLASS_NAME, "login-modal-trigger").click()
-time.sleep(0.5)
-driver.find_element(By.ID, "username").click()
-driver.find_element(By.ID, "username").send_keys("dasd12d23123")
-driver.find_element(By.ID, "password").click()
-driver.find_element(By.ID, "password").send_keys("dsauiyshgSH0Asu012joi1e123123")
-driver.find_element(By.ID, "login").click()
-
-actions = ActionChains(driver)
-
-GAME_MODE: str = "bullet"
-moves = []
-
-time_lists = {
-    "blitz": [0.1, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6, 0.7, 0.7999999999999999, 0.8999999999999999, 0.9999999999999999, 1.0999999999999999, 1.4, 1.7, 2.0, 2.3, 2.5999999999999996, 2.8999999999999995, 3.1999999999999993, 3.499999999999999, 3.799999999999999, 4.099999999999999, 4.399999999999999, 4.699999999999998, 4.999999999999998, 5.299999999999998, 5.599999999999998, 5.899999999999998, 6.1999999999999975, 6.499999999999997, 6.799999999999997, 7.099999999999997, 7.399999999999997, 7.699999999999997, 7.9999999999999964],
-    "bullet": [0.1122121, 0.11111111, 0.145, 0.16, 0.22, 0.23, 0.32, 0.54, 0.76, 0.98, 1.2, 1.42],
-    "rapid": [0.1, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6, 0.7, 0.7999999999999999, 0.8999999999999999, 0.9999999999999999, 1.0999999999999999, 1.4, 1.7, 2.0, 2.3, 2.5999999999999996, 2.8999999999999995, 3.1999999999999993, 3.499999999999999, 3.799999999999999, 4.099999999999999, 4.399999999999999, 4.699999999999998, 4.999999999999998, 5.299999999999998, 5.599999999999998, 5.899999999999998, 6.1999999999999975, 6.499999999999997, 6.799999999999997, 7.099999999999997, 7.399999999999997, 7.699999999999997, 7.9999999999999964, 8.299999999999997, 8.599999999999998, 8.899999999999999, 9.2, 9.5, 9.8, 10.100000000000001]
-}
+login(driver=driver)
 
 print("I'm ready")
 
-def move(frm: str, to: str):
-    driver.find_element(By.CLASS_NAME, board[frm]["square"]).click()
-    actions.move_to_element(driver.find_element(By.CLASS_NAME, board[frm]["square"])).perform()
-    action_chains2 = ActionChains(driver)
-    action_chains2.move_by_offset(board[frm][to][0], board[frm][to][1]).click().perform()
-
-def get_last_move():
-    fig= ""
-    try:
-        fig += driver.find_element(By.CLASS_NAME, 'selected').find_element(By.CSS_SELECTOR, 'span[data-figurine]').get_attribute('data-figurine')
-    except Exception as exception: pass
-    mv = fig + driver.find_element(By.CLASS_NAME, 'selected').text if "=" not in driver.find_element(By.CLASS_NAME, 'selected').text else driver.find_element(By.CLASS_NAME, 'selected').text + fig
-    print(mv)
-    moves.append(get_last_move() if moves and mv==moves[-1] else mv)
-    return moves[-1]
-
-time_delay = lambda: 0.2 if "clock-low-time" in driver.find_element(By.CLASS_NAME, "clock-top").get_attribute('class') else random.choice(time_lists[GAME_MODE])
-
 def game():
-    with open("chess5.svg", 'w') as file:
-        if chess.svg.board:
-            file.write(chess.svg.board(
-                chess_board,
-                size=1000,
-            ))
-    chess_board.push_san( 
-        get_last_move()
-    )
 
     print("engine:")
 
     result = engine.play(chess_board, chess.engine.Limit(time=0.1))
-    moves.append(result.move)
+
     print(result.move)
 
     chess_board.push(result.move)
-
-    move(str(result.move)[0] + str(result.move)[1], str(result.move)[2] + str(result.move)[3])
+    
     try:
-        for el in driver.find_elements(By.CLASS_NAME, "promotion-piece"):
-            if 'wq' in el.get_attribute('class'):
-                el.click()
+        chess_move(driver=driver,actions=actions, frm=str(result.move)[0] + str(result.move)[1], to=str(result.move)[2] + str(result.move)[3])
     except:
-        pass
+        print("Error while moving a piece")
+        update_board(driver=driver, chess_board=chess_board)
+        result = engine.play(chess_board, chess.engine.Limit(time=0.1))
+        print(result.move)
+        chess_board.push(result.move)
 
-    with open("chess5.svg", 'w') as file:
-        if chess.svg.board:
-            file.write(chess.svg.board(
-                chess_board,
-                size=1000,
-            ))
+    # NOTE: should make it able to promote to all the possible pieces, it depends on the classname and the word in the move str
+    if not AUTO_PROMOTE_TO_QUEEN and "=" in result.move:
+        try:
+            for el in driver.find_elements(By.CLASS_NAME, "promotion-piece"):
+                if 'wq' in el.get_attribute('class'):
+                    el.click()
+        except:
+            pass
 
-r = input()
+    render_board(chess_board=chess_board)
+    
+input("Click Here to start")
 
-if not r:
-    result = engine.play(chess_board, chess.engine.Limit(time=0.1))
-    print(result.move)
-    moves.append(result.move)
-    chess_board.push(result.move)
-    move(str(result.move)[0] + str(result.move)[1], str(result.move)[2] + str(result.move)[3])
-else:
-    game()
 
-while not chess_board.is_game_over():
-    try:
-        if ("clock-player-turn" not in driver.find_element(By.CLASS_NAME, "clock-top").get_attribute('class') and not r) or ("clock-player-turn" in driver.find_element(By.CLASS_NAME, "clock-top").get_attribute('class') and r):
-            time.sleep(time_delay())
-            game()
-            
-    except Exception as e:
-        print(e)
+while True:
+    print("game started")
 
-print(len(moves)/2)
-engine.quit()
-driver.close()
+    print("Virtual Board Created")
+    chess_board = chess.Board()
+
+    print("fetching users")
+    users_list= [ k.text for k in driver.find_elements(By.CSS_SELECTOR, '[data-test-element="user-tagline-username"]')]
+    print(users_list)
+
+    print("Writing the opponent name")
+    with open('players.txt', "a") as fhandle:
+        fhandle.write("\n")
+        fhandle.write( users_list[0] if users_list[0] != USERNAME else users_list[1] )
+
+    if users_list[-1] == USERNAME:
+        # result = engine.play(chess_board, chess.engine.Limit(time=0.1))
+        # print(result.move)
+        # move(str(result.move)[0] + str(result.move)[1], str(result.move)[2] + str(result.move)[3])
+        # chess_board.push(result.move)
+        print("e2e4")
+        chess_move(driver=driver, actions=actions, frm="e2", to="e4")
+        chess_board.push_san("e2e4")
+
+    print("waiting for the game to start")
+    while not driver.find_elements(By.CLASS_NAME, "selected"):
+        if is_ended(driver):
+            break
+    
+    print("first move played")
+    while not is_ended(driver):
+        try:
+            top_clock_turn = "clock-player-turn" not in driver.find_element(By.CLASS_NAME, "clock-top").get_attribute('class')
+            if ( not top_clock_turn and users_list[-1] == USERNAME) or (top_clock_turn and users_list[-1] != USERNAME):
+                last_move = get_last_move(driver, "black" if users_list[-1] == USERNAME else "white")
+                while not last_move:
+                    last_move = get_last_move(driver, "black" if users_list[-1] == USERNAME else "white")
+                    if is_ended(driver):
+                        break
+                chess_board.push_san(
+                    last_move
+                )
+                time.sleep(time_delay(driver, "white" if users_list[-1] == USERNAME else "black" ))
+                game()
+        except Exception as e:
+            print(e)
+
+    print("Game ended")
+    next_game(driver,driver.current_url)

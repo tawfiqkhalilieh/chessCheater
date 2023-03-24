@@ -13,8 +13,7 @@
 </p>
 
 <p>
-    - change the username and the password in the code
-    <img src="images/image.png">
+    - create the <code>player.py</code> file and copy from <code>player.py</code> ( make sure to change the username, password )
 </p>
 
 <p> setup pythonic stuff</p>
@@ -27,18 +26,15 @@
     $ pip install -r requirements
 ```
 
-<p> choose what type of games you're going to play </p>
-<img src="images/image2.png">
-
 <hr>
 
 <h3> How to run </h3>
 
 ```bash
     # play with bots
-    $ python bot.py
+    $ python other/bot.py
     # play in the analytics
-    $ python analytics.py
+    $ python other/analytics.py
     # play with **friends**
     $ python main.py
 ```
@@ -47,8 +43,8 @@
 
 <h3> how to use (online) </h3>
 <p> run the code and join a game (make sure to enable "white always down in chess.com" )</p>
-<p> if you're white just click `Enter` in the terminal to start playing, if you're black wait until your opponent plays his first move and then type batata in the terminal </p>
-<img src="images/image3.png">
+<p> Once you join the first game in the terminal you have to click <code>Enter</code> in the terminal and then you can leave it, it's now able to join new games after it finishes the game that it was playing (: </p>
+<img src="images/start.png">
 
 <hr>
 

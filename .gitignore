@@ -1,3 +1,5 @@
 fish.exe
 env/
 chesstest.py
+player.py
+__pycache__
