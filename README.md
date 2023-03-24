@@ -13,7 +13,7 @@
 </p>
 
 <p>
-    - create the <code>player.py</code> file and copy from <code>player.py</code> ( make sure to change the username, password )
+    - create the <code>player.py</code> file and copy from <code>player.example.py</code> ( make sure to change the username, password )
 </p>
 
 <p> setup pythonic stuff</p>
