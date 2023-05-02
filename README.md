@@ -31,21 +31,9 @@
 <h3> How to run </h3>
 
 ```bash
-    # play with bots
-    $ python other/bot.py
-    # play in the analytics
-    $ python other/analytics.py
-    # play with **friends**
-    $ python main.py
+    $ python main.py {account_number}
 ```
 
 <hr>
 
-<h3> how to use (online) </h3>
-<p> run the code and join a game (make sure to enable "white always down in chess.com" )</p>
-<p> Once you join the first game in the terminal you have to click <code>Enter</code> in the terminal and then you can leave it, it's now able to join new games after it finishes the game that it was playing (: </p>
-<img src="images/start.png">
-
-<hr>
-
-<b><u> feel free to open issues when you face any problem </b></u>
+<b><u> feel free to open issues when you face any problems <br> Note: chessCheaterPlus ( the undetectable version of code ) was deleted for some personal reasons </b></u>
