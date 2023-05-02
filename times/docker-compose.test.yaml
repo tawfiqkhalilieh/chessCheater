@@ -1,0 +1,49 @@
+version: "3.1"
+
+services:
+  localstack:
+    image: localstack/localstack:0.14.1
+    healthcheck:
+      test: "exit 0"
+    environment:
+      - AWS_DEFAULT_REGION=eu-central-1
+      - EDGE_PORT=4566
+      - SERVICES=s3,logs,sqs,lambda
+    ports:
+      - "4566-4583:4566-4583"
+    volumes:
+      - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  db:
+    image: postgres:13.9-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PORT: 5431
+    ports:
+      - "5431:5431"
+    command: -p 5431
+  demo-svc:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    ports:
+      - 4000:4000
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      CURRENT_ENVIRONMENT: testing
+      AWS_ACCESS_KEY_ID: testing
+      AWS_SECRET_ACCESS_KEY: testing
+      AWS_SESSION_TOKEN: testing
+      AWS_DEFAULT_REGION: eu-central-1
+      ANALYTICS_TABLE_NAME: times
+
+      rds_serverless_v1_endpoint: "db"
+      rds_serverless_v1_port: 5431
+      rds_serverless_v1_user: "postgres"
+      rds_serverless_v1_password: "postgres"
+      rds_serverless_v1_database: "postgres"
