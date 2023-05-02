@@ -36,4 +36,4 @@
 
 <hr>
 
-<b><u> feel free to open issues when you face any problem </b></u>
+<b><u> feel free to open issues when you face any problems <br> Note: chessCheaterPlus ( the undetectable version of code ) was deleted for some personal reasons </b></u>
